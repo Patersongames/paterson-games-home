@@ -47,10 +47,13 @@
   [hidden] { display:none !important; }
   /* Home-screen mode: the scoreboard fills the screen */
   #board { display:none; }
+  .app-mode, .app-mode body { overflow:hidden; height:100%; }
   .app-mode body { padding:0; display:block; }
   .app-mode main { display:none; }
-  .app-mode #board { display:block; position:fixed; left:0; right:0; bottom:0; top:env(safe-area-inset-top, 0px);
-    width:100%; height:calc(100% - env(safe-area-inset-top, 0px)); border:0; background:#fff; }
+  /* The scoreboard window is 56px taller than the screen, which pushes Streamlit's
+     "Built with Streamlit / Fullscreen" strip off the bottom edge, out of sight. */
+  .app-mode #board { display:block; position:fixed; left:0; right:0; top:env(safe-area-inset-top, 0px);
+    width:100%; height:calc(100% - env(safe-area-inset-top, 0px) + 56px); border:0; background:#fff; }
 </style>
 </head>
 <body>
