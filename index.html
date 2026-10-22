@@ -17,11 +17,12 @@
   // ===== The scoreboard's web address. Change this line if yours is different. =====
   var SCOREBOARD_URL = "https://paterson-games.streamlit.app";
 
-  // Opened from the home-screen icon: go straight to the scoreboard.
+  // Opened from the home-screen icon: show the scoreboard full-screen inside this page,
+  // so it stays an "app" (no browser bars) instead of jumping out to Safari or Chrome.
   var fromHomeScreen = window.navigator.standalone === true ||
     (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
     /[?&]launch=1/.test(location.search);
-  if (fromHomeScreen) { location.replace(SCOREBOARD_URL); }
+  if (fromHomeScreen) { document.documentElement.className = "app-mode"; }
 </script>
 <style>
   :root { --blue:#191f6c; --red:#a90433; --tan:#c39366; --paper:#ededed; }
@@ -44,6 +45,12 @@
   .other { font-size:.85rem; color:rgba(255,255,255,.7); }
   .other button { background:none; border:0; color:var(--tan); text-decoration:underline; font:inherit; cursor:pointer; padding:0; }
   [hidden] { display:none !important; }
+  /* Home-screen mode: the scoreboard fills the screen */
+  #board { display:none; }
+  .app-mode body { padding:0; display:block; }
+  .app-mode main { display:none; }
+  .app-mode #board { display:block; position:fixed; left:0; right:0; bottom:0; top:env(safe-area-inset-top, 0px);
+    width:100%; height:calc(100% - env(safe-area-inset-top, 0px)); border:0; background:#fff; }
 </style>
 </head>
 <body>
@@ -73,7 +80,11 @@
 
   <p class="other" id="other"><button type="button" id="showAll">Show steps for the other phone</button></p>
 </main>
+<iframe id="board" title="Paterson Games scoreboard"></iframe>
 <script>
+  if (fromHomeScreen) {
+    document.getElementById("board").src = SCOREBOARD_URL.replace(/\/$/, "") + "/?embed=true&embed_options=light_theme";
+  }
   document.getElementById("go").href = SCOREBOARD_URL;
   var ua = navigator.userAgent || "";
   var isIOS = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && "ontouchend" in document);
